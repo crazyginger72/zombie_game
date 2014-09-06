@@ -2,6 +2,8 @@
 Firearms Mod for Minetest
 Copyright (c) 2013, Diego Martínez
 
+this version edited by crazyginger72
+
 This mod adds several firearms to the game. Currently included are a .45
 handgun, a shotgun, an assault rifle, and a grenade launcher.
 

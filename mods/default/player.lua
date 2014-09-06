@@ -271,8 +271,9 @@ minetest.register_chatcommand("gender", {
 })
  
 
-minetest.register_chatcommand("/heal", {
+minetest.register_chatcommand("heal", {
 	description = "heals you.",
+	func = function(name)
 	local plname = name
     if gender.players[plname] == "mz" then
         player:set_properties({
@@ -298,6 +299,7 @@ minetest.register_chatcommand("/heal", {
         gender.players[plname] = "f"
     end
     gender.save_data()
+	end
         
 })
 

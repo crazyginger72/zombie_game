@@ -49,7 +49,7 @@ firearmslib.register_firearm("firearms_guns:adminrifle", {
     inventory_image = "firearmsar72.png";
     bullets = "firearms_guns:round_admin";
     clip_size = 9999;
-    spread = 0.050;
+    spread = 0.00;
 	radius = 35;
 	range = 1000;
     burst = 1;

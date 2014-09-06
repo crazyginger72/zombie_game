@@ -64,6 +64,18 @@ local function count_ammo ( gundef, player )
     return count;
 end
 
+minetest.register_entity("firearmslib:smokepuff", {
+    physical = false;
+    timer = 0;
+    textures = { "smoke_puff.png" };
+    collisionbox = { 0, 0, 0, 0, 0, 0 };
+    on_step = function ( self, dtime )
+        self.timer = self.timer + dtime;
+        if (self.timer > 1) then
+            self.object:remove();
+        end
+    end;
+});
 
 local wielded_firearm = { };
 
@@ -152,33 +164,33 @@ local function shoot ( itemstack, player, pointed_thing )
                 local obj = kutils.find_pointed_thing({
                     pos = pos;
                     delta = dir;
-                    range = gundef.range;--20;
-                    radius = ((gundef.radius / 10) + 0.3);  --1.5;
+                    range = 20;
+                    radius = 2;
                     user = player;
                 });
                 --print("DEBUG: pointed object: "..dump(obj));
                 local vel = {
-                    x = dir.x * 8;
-                    y = dir.y * 8;
-                    z = dir.z * 8;
+                    x = dir.x * 35;
+                    y = dir.y * 35;
+                    z = dir.z * 35;
                 };
                 -- Flying bullet (thanks to Exio for the idea)
                 minetest.add_particle(
                     pos,        -- pos
                     vel,        -- velocity
                     {x=0,y=0,z=0}, -- acceleration
-                    0.2,          -- expirationtime
+                    5,          -- expirationtime
                     0.3,         -- size
-                    false,      -- collisiondetection
+                    true,      -- collisiondetection
                     "round_in_air.png"--, -- texture (new texture by cg72)
                     --nil         -- playername
                 );
                 if (obj) then
                     if (firearmslib.ENABLE_BREAKING_GLASS and obj.node
                      and firearmslib.BREAKING_GLASS_NODES[obj.node.name]) then
-                    --[[if (minetest.get_modpath("item_drop")) then
+                        if (minetest.get_modpath("item_drop")) then
                             minetest.spawn_item(obj.pos, obj.node.name);
-                        end]]
+                        end
                         minetest.env:remove_node(obj.pos);
                     elseif (obj.entity) then
                         --local dist = kutils.distance3d(player:getpos(), obj.entity:getpos());
@@ -206,7 +218,7 @@ local function shoot ( itemstack, player, pointed_thing )
         pos.y = pos.y + 1.5;
         local dir = player:get_look_dir();
         pos.x = pos.x + (dir.x / 2);
-        pos.y = pos.y + ((dir.y / 2) );
+        pos.y = pos.y + (dir.y / 2);
         pos.z = pos.z + (dir.z / 2);
     
         local vel = {
@@ -282,7 +294,6 @@ firearmslib.register_firearm = function ( name, def )
         on_use = shoot;
         type = "tool";
         wield_scale = def.wield_scale;
-		
     });
     
 end
@@ -318,12 +329,12 @@ firearmslib.register_bullet = function ( name, def )
             local pos = self.object:getpos();
             local node = minetest.env:get_node(pos);
     
-            if ((self.def.leaves_smoke) and (self.lastpos.x)) then
+            --[[if ((self.def.leaves_smoke) and (self.lastpos.x)) then
                 local smoke = minetest.env:add_entity(
                     self.lastpos,
                     "firearms:smokepuff"
                 );
-            end
+            end]]
     
             if (self.timer > 0.10) then
                 local objs = minetest.env:get_objects_inside_radius({x=pos.x,y=pos.y,z=pos.z}, 1);
@@ -352,13 +363,13 @@ firearmslib.register_bullet = function ( name, def )
                 end
             end
     
-            if (self.timer >= (self.def.maxtimer or 3)) then
+            if (self.timer >= (self.def.maxtimer or 5)) then
                 self:_destroy();
                 return;
             end
     
             if (self.lastpos.x ~= nil) then
-                if (node.name ~= "air") then
+                if (node.name ~= "air") and (node.name ~= "ignore") then
                     self:_destroy();
                     return;
                 end
