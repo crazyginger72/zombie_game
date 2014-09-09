@@ -36,8 +36,8 @@ function mobs:register_mob(name, def)
 		state = "stand",
 		v_start = false,
 		old_y = nil,
-		lifetimer = 600,
-		tamed = false,
+		lifetimer = 6000000,
+		tamed = true,
 		
 		set_velocity = function(self, v)
 			local yaw = self.object:getyaw()
@@ -113,23 +113,6 @@ function mobs:register_mob(name, def)
 		end,
 		
 		on_step = function(self, dtime)
-			if self.type == "monster" and minetest.setting_getbool("only_peaceful_mobs") then
-				self.object:remove()
-			end
-			
-			self.lifetimer = self.lifetimer - dtime
-			if self.lifetimer <= 0 and not self.tamed then
-				local player_count = 0
-				for _,obj in ipairs(minetest.env:get_objects_inside_radius(self.object:getpos(), 20)) do
-					if obj:is_player() then
-						player_count = player_count+1
-					end
-				end
-				if player_count == 0 and self.state ~= "attack" then
-					self.object:remove()
-					return
-				end
-			end
 			
 			if self.object:getvelocity().y > 0.1 then
 				local yaw = self.object:getyaw()
@@ -215,7 +198,7 @@ function mobs:register_mob(name, def)
 				do_env_damage(self)
 			end
 			
-			if self.type == "monster" and minetest.setting_getbool("enable_damage") then
+			if self.type == "monster" then
 				for _,player in pairs(minetest.get_connected_players()) do
 					local s = self.object:getpos()
 					local p = player:getpos()
@@ -519,35 +502,6 @@ function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_o
 				minetest.chat_send_all("[mobs] Add "..name.." at "..minetest.pos_to_string(pos))
 			end
 			minetest.env:add_entity(pos, name)
-		end
-	})
-end
-
-function mobs:register_arrow(name, def)
-	minetest.register_entity(name, {
-		physical = false,
-		visual = def.visual,
-		visual_size = def.visual_size,
-		textures = def.textures,
-		velocity = def.velocity,
-		hit_player = def.hit_player,
-		hit_node = def.hit_node,
-		
-		on_step = function(self, dtime)
-			local pos = self.object:getpos()
-			if minetest.env:get_node(self.object:getpos()).name ~= "air" then
-				self.hit_node(self, pos, node)
-				self.object:remove()
-				return
-			end
-			pos.y = pos.y-1
-			for _,player in pairs(minetest.env:get_objects_inside_radius(pos, 1)) do
-				if player:is_player() then
-					self.hit_player(self, player)
-					self.object:remove()
-					return
-				end
-			end
 		end
 	})
 end
