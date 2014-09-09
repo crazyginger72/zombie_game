@@ -3,15 +3,15 @@ dofile(minetest.get_modpath("mobs").."/api.lua")
 mobs:register_mob("mobs:zombie", {
 	type = "monster",
 	hp_max = 16,
-	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1.9, 0.4},
+	collisionbox = {-0.3,-1.0,-0.3, 0.3,0.8,0.3},
 	visual = "mesh",
 	mesh = "character.b3d",--"mobs_stone_monster.x",
-	textures = {"mobs_dirt_monster.png"},
-	visual_size = {x=3, y=2.6},
+	textures = {"charactermz.png"},
+	visual_size = {x=1, y=1},
 	makes_footstep_sound = true,
-	view_range = 35,
-	walk_velocity = 1,
-	run_velocity = 3,
+	view_range = 50,
+	walk_velocity = 1.5,
+	run_velocity = 8,
 	damage = 3,
 	drops = {
 		{name = "mapgen:dirt",
@@ -28,7 +28,6 @@ mobs:register_mob("mobs:zombie", {
 	attack_type = "dogfight",
 	animation = {
 		speed_normal = 15,
-		speed_run = 15,
 		stand_start = 0,
 		stand_end = 14,
 		walk_start = 15,
@@ -39,17 +38,17 @@ mobs:register_mob("mobs:zombie", {
 		punch_end = 63,
 	}
 })
-mobs:register_spawn("mobs:dirt_monster", {"mapgen:grass_1", "mapgen:grass_2", "mapgen:grass_3", "mapgen:grass_4", "mapgen:snowy_grass", "mapgen:dirt", "mapgen:perma_dirt"}, 3, -1, 7000, 3, 31000)
+mobs:register_spawn("mobs:zombie", {"default:dirt","default:dirt_with_grass","default:sand","default:desertsand"}, 20, -20, 120, 3, 31000)
 
-mobs:register_mob("mobs:sheep", {
+mobs:register_mob("mobs:zombie_sheep", {
 	type = "monster",
-	hp_max = 10,
+	hp_max = 200,
 	collisionbox = {-0.4, -0.01, -0.6, 0.4, 0.9, 0.4},
 	textures = {"mobs_sheep.png"},
 	visual = "mesh",
 	mesh = "mobs_sheep.x",
 	makes_footstep_sound = true,
-	walk_velocity = 1,
+	walk_velocity = 1.5,
 	run_velocity = 8,
 	attack_type = "dogfight",
 	damage = 3,
@@ -78,7 +77,7 @@ mobs:register_mob("mobs:sheep", {
 		walk_end = 100,
 	},
 	follow = "farming:wheat",
-	view_range = 5,
+	view_range = 50,
 	
 	on_rightclick = nil, --[[function(self, clicker)
 		local item = clicker:get_wielded_item()
@@ -108,7 +107,7 @@ mobs:register_mob("mobs:sheep", {
 		end
 	end,]]--
 })
-mobs:register_spawn("mobs:sheep", {"mapgen:grass1","mapgen:grass2","mapgen:grass3","mapgen:grass4",}, 20, 8, 9000, 1, 31000)
+mobs:register_spawn("mobs:zombie_sheep", {"default:dirt","default:dirt_with_grass","default:sand","default:desertsand",}, 20, -20, 90, 3, 31000)
 
 minetest.register_craftitem("mobs:meat_raw", {
 	description = "Raw Meat",
